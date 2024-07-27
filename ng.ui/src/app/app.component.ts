@@ -19,8 +19,8 @@ export class AppComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.response$ = this.mockService.getWeatherInfo().;
+    this.response$ = this.mockService.getWeatherInfo();
 
-    this.response$
+    console.log(this.response$);
   }
 }

@@ -3,37 +3,35 @@
     public class Customer
     {
         public required int Id { get; set; }
-        public required string Name { get; set; }
         public required string Email { get; set; }
         public required string Password { get; set; }
+        public required string Role { get; set; }
     }
 
     public class Order
     {
         public required int Id { get; set; }
-        
-        public required Customer User { get; set; }
-        public required int UserId { get; set; }
-
-        public required Product Product { get; set; }
-        public required int ProductId { get; set; }
+        public required DateTime OrderDate { get; set; }
+        public required Customer Customer { get; set; }
+        public required int CustomerId { get; set; }
+        public ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
     }
 
     public class Product
     {
         public required int Id { get; set; }
         public required string Name { get; set; }
+        public required string Description { get; set; }
         public required double Price { get; set; }
-
-        public required int ProductImageId { get; set; }
-        public required ProductImage ProductImage { get; set; }
+        public required string ImageUrl { get; set; }
     }
 
-    public class ProductImage
+    public class OrderProduct
     {
-        public required int Id { get; set; }
-        public required byte[] ImageData { get; set; }
-        public required string ContentType { get; set; }
-        public required string FileName { get; set; }
+        public required int OrderId { get; set; }
+        public required Order Order { get; set; }
+        public required int ProductId { get; set; }
+        public required Product Product { get; set; }
+        public required int Quantity { get; set; }
     }
 }
