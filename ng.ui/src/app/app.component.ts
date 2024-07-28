@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { MockService } from './services/mock/mock.service';
-import { Observable } from 'rxjs';
+import { CustomerDto, ErrorDto, MockService } from './services/mock/mock.service';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 export class AppComponent implements OnInit {
   title = 'ng.ui';
   response$: any;
+  customerResponse: CustomerDto[] | ErrorDto;
 
   constructor(
     private mockService: MockService,
@@ -22,5 +23,12 @@ export class AppComponent implements OnInit {
     this.response$ = this.mockService.getWeatherInfo();
 
     console.log(this.response$);
+
+    this.mockService.getCustomers(4).pipe(
+      tap((res: CustomerDto[] | ErrorDto) => {
+        this.customerResponse = res;
+        console.log(this.customerResponse);
+      }),
+    ).subscribe();
   }
 }

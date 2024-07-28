@@ -7,6 +7,18 @@ export interface WeatherReport {
 
 }
 
+export class CustomerDto {
+  email: string;
+  name: string;
+  role: string;
+}
+
+export class ErrorDto {
+  loading = false;
+  errorCode: string;
+  message: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,12 +29,33 @@ export class MockService {
     private http: HttpClient
   ) { }
 
-  getWeatherInfo(): Observable<WeatherReport[]> {
-    // return this.http.get(`${baseUrl}WeatherForecast`).pipe(
-    //   tap((res) => ({ loading: false, res })),
-    //   catchError((error) => of({ loading: false, error })),
-    //   startWith(() => { loading: true })
-    // )
-    return of([1, 2, 3]);
+  getWeatherInfo(): Observable<WeatherReport[] | ErrorDto> {
+    return this.http.get<WeatherReport[]>(`${baseUrl}WeatherForecast`).pipe(
+      tap((res) => ({ loading: false, res })),
+      catchError((error) => { console.log('logging error: ', error); return of({ loading: false, errorCode: '400', message: 'something went wrong' }) as Observable<ErrorDto> }),
+      // startWith(() => { loading: true }),
+    );
+  }
+
+  getCustomers(id: number): Observable<CustomerDto[] | ErrorDto> {
+    if (!id) {
+      return of({
+        loading: false,
+        errorCode: '400',
+        message: 'No ID parameter passed'
+      }) as Observable<ErrorDto>;
+    }
+
+    return this.http.get<CustomerDto[]>(`${baseUrl}WeatherForecast/${id}`).pipe(
+      tap((res) => res),
+      catchError((error: ErrorDto) => {
+        console.log('logging error: ', error);
+        return of({
+          loading: false,
+          errorCode: '400',
+          message: 'something went wrong'
+        }) as Observable<ErrorDto>
+      }),
+    );
   }
 }
